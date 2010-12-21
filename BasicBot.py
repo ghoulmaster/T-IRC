@@ -37,11 +37,18 @@ class Tirc(irc.IRCClient):
         log.msg("\nUser: %s\nChannel: %s\nMessage: %s\n" % (user, channel, msg))
         #work out if its addressed to me
         chain = msg.strip()
-        if msg.startswith(self.nickname):
-            chain = chain.split()[1:]
-            if chain[0].startswith('!'):
-                chain[0].strip('!')
-                self.msg(channel, self.com.process_command(chain))
+        ifuser = user.split("!")
+        log.msg("\nifuser: %s" % ifuser)
+        if "Taos"== ifuser[0] or "ghoulmaster" == ifuser[0]:
+            if msg.startswith(self.nickname):
+                chain = chain.split()[1:]
+                if chain[0].startswith('!'):
+                    chain[0].strip('!')
+                    log.msg("\n %s" % chain[0])
+                    if "kick" == chain[0] or "!kick" == chain[0]: irc.IRCClient.kick(self, "python-forum", chain[1], reason="cuz i said so") 
+                    self.msg(channel, self.com.process_command(chain))
+                else:
+                    pass
             else:
                 pass
         else:
@@ -51,8 +58,7 @@ class Tirc(irc.IRCClient):
         return """Welcome to Python-forum ~ Tenarus is a bot, powered by Tirc
         written by Taos ~ Don't ask just ask. ~ Paste > 3 lines? Use a paste
         service..."""
-
-
+    
 class TircFactory(protocol.ClientFactory):
     protocol = Tirc
 
@@ -73,7 +79,8 @@ class COM(object):
     def __init__(self):
         self.cmds = {'!time':self.get_time,
                     '!google':self.google_search,
-                    '!help':self.helper}
+                    '!help':self.helper, 
+                    '!kick':None}
 
     def process_command(self, cmds):
         if cmds[0] not in self.cmds:
