@@ -39,16 +39,24 @@ class Tirc(irc.IRCClient):
         chain = msg.strip()
         ifuser = user.split("!")
         log.msg("\nifuser: %s" % ifuser)
-        if "Taos"== ifuser[0] or "ghoulmaster" == ifuser[0]:
-            if msg.startswith(self.nickname):
-                chain = chain.split()[1:]
-                if chain[0].startswith('!'):
-                    chain[0].strip('!')
-                    log.msg("\n %s" % chain[0])
-                    if "kick" == chain[0] or "!kick" == chain[0]: irc.IRCClient.kick(self, "python-forum", chain[1], reason="cuz i said so") 
-                    self.msg(channel, self.com.process_command(chain))
-                else:
-                    pass
+        if msg.startswith(self.nickname) or msg.startswith("!"):
+            if msg.startswith("!"): chain = chain.split()
+            else: chain = chain.split()[1:]
+            if chain[0].startswith('!'):
+                chain[0].strip('!')
+                log.msg("\n %s" % chain[0])
+                if "kick" == chain[0] or "!kick" == chain[0]:
+                    if "Taos" == ifuser[0] or "ghoulmaster" == ifuser[0]: irc.IRCClient.kick(self, "python-forum", chain[1], reason="cuz i said so")
+                    else: self.msg(channel, "WTF, YOU AINT OP BITCH!!") 
+                elif "mode" == chain[0] or "!mode" == chain[0]:
+                    if "ghoulmaster" == ifuser[0]:
+                       isTrue = False
+                       if chain[1] == "+": isTrue = True
+                       else: isTrue = False 
+                       irc.IRCClient.mode(self, "#python-forum", isTrue, chain[2], user=chain[3])
+                    else: self.msg(channel, "WTF, YOU AINT OP BITCH!!")
+                else: self.msg(channel, self.com.process_command(chain))
+                
             else:
                 pass
         else:
