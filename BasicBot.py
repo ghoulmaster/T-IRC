@@ -167,7 +167,7 @@ def main(chan, nick, password, out):
 if __name__ in '__main__':
     chan = '#python-forum'
     nick = 'ghoulbot'#raw_input('Enter a nick: ')
-    password = 'platinum'#raw_input('Enter a pass: ')
+    raw_input('Enter a pass: ')
     log.startLogging(sys.stdout)
     reactor.connectTCP('irc.freenode.net',6667,
             TircFactory(chan, nick, password, COM))
